@@ -10,9 +10,18 @@ import { registerSW } from 'virtual:pwa-register';
 import App from './App.tsx';
 import './index.css';
 
+const isNativeCapacitor = Boolean(
+  (
+    window as unknown as {
+      Capacitor?: { isNativePlatform?: () => boolean };
+    }
+  ).Capacitor?.isNativePlatform?.(),
+);
+
 if (
-  window.location.protocol === 'http:' ||
-  window.location.protocol === 'https:'
+  !isNativeCapacitor &&
+  (window.location.protocol === 'http:' ||
+    window.location.protocol === 'https:')
 ) {
   const updateSW = registerSW({
     immediate: true,

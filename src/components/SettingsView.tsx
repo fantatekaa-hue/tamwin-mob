@@ -169,16 +169,60 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     try {
       const payload = await exportBackupPayload();
       const json = JSON.stringify(payload, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
       const stamp = new Date().toISOString().slice(0, 10);
-      a.href = url;
-      a.download = `tamween-backup-${stamp}.tamweenbackup`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      const fileName = `tamween-backup-${stamp}.tamweenbackup`;
+
+      const cap = (
+        window as unknown as {
+          Capacitor?: {
+            isNativePlatform?: () => boolean;
+            Plugins?: {
+              Filesystem?: {
+                writeFile: (opts: {
+                  path: string;
+                  data: string;
+                  directory: string;
+                  encoding: string;
+                }) => Promise<{ uri: string }>;
+              };
+              Share?: {
+                share: (opts: {
+                  title?: string;
+                  url?: string;
+                  dialogTitle?: string;
+                }) => Promise<void>;
+              };
+            };
+          };
+        }
+      ).Capacitor;
+
+      if (cap?.isNativePlatform?.() && cap.Plugins?.Filesystem) {
+        const res = await cap.Plugins.Filesystem.writeFile({
+          path: fileName,
+          data: json,
+          directory: 'CACHE',
+          encoding: 'utf8',
+        });
+        if (cap.Plugins.Share) {
+          await cap.Plugins.Share.share({
+            title: 'نسخة احتياطية — مساعد استعاضة التموين',
+            url: res.uri,
+            dialogTitle: 'حفظ أو مشاركة النسخة الاحتياطية',
+          });
+        }
+      } else {
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
       await onDataChanged();
       setStatusMessage({
         type: 'success',
