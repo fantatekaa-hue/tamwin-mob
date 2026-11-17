@@ -1,0 +1,37 @@
+{
+  "appId": "com.ahmedhasaballah.tamween",
+  "productName": "Tamween-Assistant",
+  "npmRebuild": false,
+  "buildDependenciesFromSource": false,
+  "directories": {
+    "output": "release-win"
+  },
+  "files": [
+    "dist/**/*",
+    "electron/**/*",
+    "package.json",
+    "!node_modules/**/*"
+  ],
+  "win": {
+    "icon": "dist/pwa-512x512.png",
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "portable": {
+    "artifactName": "Tamween-Assistant-Portable.exe"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "shortcutName": "مساعد استعاضة التموين",
+    "artifactName": "Tamween-Assistant-Setup.exe"
+  }
+}

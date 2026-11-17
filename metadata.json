@@ -1,0 +1,6 @@
+{
+  "name": "مساعد استعاضة التموين",
+  "description": "تطبيق محلي دون إنترنت لإدارة جرد مخزون التموين وحساب قيمة الاستعاضة وإعداد فاتورة الاستعاضة بدقة — إعداد أحمد حسب الله.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
